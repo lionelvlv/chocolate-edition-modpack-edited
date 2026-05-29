@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Chocolate Edition</title>
+<style>
+@font-face {
+  font-family: 'Minecraft';
+  src: url('https://fonts.cdnfonts.com/s/27125/Minecraft.woff') format('woff');
+  font-weight: normal;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --black:    #1d1d1d;
+  --darkgray: #2d2d2d;
+  --gray:     #3d3d3d;
+  --midgray:  #555;
+  --lightgray:#888;
+  --offwhite: #d4d4d4;
+  --white:    #f0f0f0;
+  --green:    #5daa37;
+  --green-dk: #3d7a1f;
+  --green-hi: #7dcf57;
+  --dirt:     #8b5e3c;
+  --dirt-dk:  #5c3d22;
+  --gold:     #d4a017;
+  --gold-hi:  #f5c842;
+  --teal:     #3ecfb2;
+  --red:      #c0392b;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: 'Minecraft', 'Courier New', monospace;
+  font-size: 16px;
+  line-height: 1.5;
+  image-rendering: pixelated;
+}
+
+/* ── PIXEL SHADOW TEXT ── */
+.px-text {
+  text-shadow: 3px 3px 0 rgba(0,0,0,0.7);
+}
+.px-text-green {
+  color: var(--green);
+  text-shadow: 3px 3px 0 var(--green-dk);
+}
+.px-text-gold {
+  color: var(--gold-hi);
+  text-shadow: 3px 3px 0 #7a5800;
+}
+
+/* ── PIXELATED BORDER (4px solid stepped) ── */
+.px-border {
+  border: 4px solid;
+  border-color: var(--offwhite) var(--midgray) var(--midgray) var(--offwhite);
+  outline: 4px solid var(--black);
+}
+
+/* ── NAVBAR ── */
+nav {
+  background: var(--black);
+  border-bottom: 4px solid var(--green-dk);
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-brand {
+  font-family: 'Minecraft', monospace;
+  font-size: 1.1rem;
+  color: var(--green-hi);
+  text-decoration: none;
+  text-shadow: 2px 2px 0 var(--green-dk);
+  letter-spacing: 0.05em;
+}
+
+.nav-links { display: flex; gap: 2rem; list-style: none; }
+.nav-links a {
+  font-family: 'Minecraft', monospace;
+  font-size: 0.72rem;
+  color: var(--offwhite);
+  text-decoration: none;
+  letter-spacing: 0.08em;
+  text-shadow: 2px 2px 0 rgba(0,0,0,0.8);
+  transition: color 0.15s;
+}
+.nav-links a:hover { color: var(--green-hi); }
+
+/* ── HERO ── */
+.hero {
+  background: var(--darkgray);
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 480px;
+  border-bottom: 4px solid var(--green-dk);
+}
+
+@media (max-width: 700px) {
+  .hero { grid-template-columns: 1fr; }
+  .hero-img-side { display: none; }
+}
+
+/* dirt/grass stripe across bottom of hero */
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 8px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--green) 0px, var(--green) 32px,
+    var(--green-dk) 32px, var(--green-dk) 64px
+  );
+}
+
+.hero-text {
+  padding: 4rem 3rem 5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.25rem;
+  background: linear-gradient(135deg, #111 0%, #1d1d1d 100%);
+}
+
+.hero-eyebrow {
+  font-size: 0.7rem;
+  color: var(--teal);
+  letter-spacing: 0.2em;
+  text-shadow: 2px 2px 0 rgba(0,0,0,0.8);
+}
+
+.hero-title {
+  font-size: clamp(1.6rem, 4vw, 2.6rem);
+  color: var(--gold-hi);
+  text-shadow: 4px 4px 0 #7a5800;
+  line-height: 1.2;
+}
+
+.hero-sub {
+  font-size: 0.78rem;
+  color: var(--offwhite);
+  max-width: 400px;
+  text-shadow: 2px 2px 0 rgba(0,0,0,0.8);
+  letter-spacing: 0.04em;
+  line-height: 1.7;
+}
+
+.hero-img-side {
+  background: linear-gradient(160deg, #2a1a08 0%, #1d1206 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  overflow: hidden;
+  position: relative;
+}
+
+.hero-img-side img {
+  width: 100%;
+  max-width: 480px;
+  display: block;
+  image-rendering: auto;
+}
+
+/* ── PIXEL BUTTON ── */
+.btn {
+  display: inline-block;
+  font-family: 'Minecraft', monospace;
+  font-size: 0.82rem;
+  letter-spacing: 0.05em;
+  padding: 0.75rem 1.75rem;
+  cursor: pointer;
+  text-decoration: none;
+  position: relative;
+  transition: transform 0.1s, filter 0.1s;
+  user-select: none;
+}
+
+.btn:active { transform: translateY(2px); }
+
+.btn-green {
+  background: var(--green);
+  color: #fff;
+  text-shadow: 2px 2px 0 var(--green-dk);
+  border-top: 4px solid var(--green-hi);
+  border-left: 4px solid var(--green-hi);
+  border-right: 4px solid #2a5c10;
+  border-bottom: 4px solid #2a5c10;
+}
+.btn-green:hover { filter: brightness(1.12); }
+
+.btn-gray {
+  background: var(--gray);
+  color: var(--white);
+  text-shadow: 2px 2px 0 #111;
+  border-top: 4px solid #666;
+  border-left: 4px solid #666;
+  border-right: 4px solid #1a1a1a;
+  border-bottom: 4px solid #1a1a1a;
+}
+.btn-gray:hover { filter: brightness(1.15); }
+
+/* ── SECTION ── */
+.section {
+  padding: 4rem 2rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.section-header {
+  margin-bottom: 2.5rem;
+  border-left: 6px solid var(--green);
+  padding-left: 1rem;
+}
+
+.section-title {
+  font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+  color: var(--white);
+  text-shadow: 3px 3px 0 rgba(0,0,0,0.8);
+  letter-spacing: 0.04em;
+}
+
+.section-sub {
+  font-size: 0.72rem;
+  color: var(--lightgray);
+  margin-top: 0.5rem;
+  letter-spacing: 0.06em;
+}
+
+/* ── DIVIDER ── */
+.divider {
+  height: 4px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--green-dk) 0px, var(--green-dk) 16px,
+    var(--dirt-dk) 16px, var(--dirt-dk) 32px
+  );
+}
+
+/* ── FEATURES ── */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 3px;
+  background: #111;
+  border: 3px solid #111;
+}
+
+.feat-card {
+  background: var(--darkgray);
+  padding: 1.5rem;
+  transition: background 0.15s;
+  position: relative;
+}
+
+.feat-card:hover { background: var(--gray); }
+
+.feat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--green-dk);
+}
+
+.feat-card:hover::before { background: var(--green-hi); }
+
+.feat-icon { font-size: 1.5rem; margin-bottom: 0.75rem; display: block; }
+
+.feat-title {
+  font-size: 0.8rem;
+  color: var(--green-hi);
+  text-shadow: 2px 2px 0 var(--green-dk);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.04em;
+}
+
+.feat-body {
+  font-size: 0.7rem;
+  color: var(--lightgray);
+  line-height: 1.6;
+  letter-spacing: 0.03em;
+}
+
+/* ── BOSS SECTION ── */
+.boss-wrap {
+  background: var(--darkgray);
+  border: 3px solid #111;
+}
+
+.boss-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 0;
+}
+
+@media (max-width: 700px) {
+  .boss-inner { grid-template-columns: 1fr; }
+}
+
+.boss-img {
+  display: block;
+  width: 100%;
+  image-rendering: auto;
+}
+
+.boss-text {
+  padding: 3rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+  background: var(--black);
+}
+
+.boss-eyebrow {
+  font-size: 0.65rem;
+  color: var(--red);
+  letter-spacing: 0.2em;
+  text-shadow: 2px 2px 0 rgba(0,0,0,0.8);
+}
+
+.boss-title {
+  font-size: clamp(1.2rem, 3vw, 1.8rem);
+  color: var(--white);
+  text-shadow: 3px 3px 0 rgba(0,0,0,0.8);
+  line-height: 1.2;
+}
+
+.boss-body {
+  font-size: 0.72rem;
+  color: var(--lightgray);
+  letter-spacing: 0.04em;
+  line-height: 1.7;
+}
+
+.stat-row {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.stat { display: flex; flex-direction: column; gap: 2px; }
+
+.stat-num {
+  font-size: 1.6rem;
+  color: var(--gold-hi);
+  text-shadow: 3px 3px 0 #7a5800;
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 0.62rem;
+  color: var(--lightgray);
+  letter-spacing: 0.1em;
+}
+
+/* ── MODS ADDED ── */
+.mod-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-top: 0.5rem;
+}
+
+.mod-row {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  background: var(--darkgray);
+  padding: 1.25rem 1.5rem;
+  text-decoration: none;
+  color: var(--white);
+  border-left: 4px solid var(--green-dk);
+  transition: all 0.15s;
+  position: relative;
+}
+
+.mod-row:hover {
+  background: var(--gray);
+  border-left-color: var(--green-hi);
+}
+
+.mod-icon-box {
+  width: 48px;
+  height: 48px;
+  background: var(--black);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+  border: 2px solid var(--midgray);
+}
+
+.mod-name {
+  font-size: 0.82rem;
+  color: var(--green-hi);
+  text-shadow: 2px 2px 0 var(--green-dk);
+  letter-spacing: 0.05em;
+}
+
+.mod-desc {
+  font-size: 0.68rem;
+  color: var(--lightgray);
+  margin-top: 3px;
+  letter-spacing: 0.04em;
+}
+
+.new-tag {
+  margin-left: auto;
+  font-size: 0.6rem;
+  background: var(--teal);
+  color: #000;
+  padding: 3px 8px;
+  text-shadow: none;
+  letter-spacing: 0.1em;
+  flex-shrink: 0;
+}
+
+/* ── INSTALL STEPS ── */
+.steps { display: flex; flex-direction: column; gap: 0; }
+
+.step {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 0 1.5rem;
+  padding-bottom: 3rem;
+  position: relative;
+}
+
+.step:last-child { padding-bottom: 0; }
+
+.step-num-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.step-num-box {
+  width: 48px;
+  height: 48px;
+  background: var(--green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  color: #fff;
+  text-shadow: 2px 2px 0 var(--green-dk);
+  flex-shrink: 0;
+  border-top: 4px solid var(--green-hi);
+  border-left: 4px solid var(--green-hi);
+  border-right: 4px solid #2a5c10;
+  border-bottom: 4px solid #2a5c10;
+  position: relative;
+  z-index: 1;
+}
+
+.step-line {
+  width: 3px;
+  flex: 1;
+  background: var(--gray);
+  margin-top: 4px;
+}
+
+.step:last-child .step-line { display: none; }
+
+.step-body { padding-top: 8px; }
+
+.step-title {
+  font-size: 0.9rem;
+  color: var(--white);
+  text-shadow: 2px 2px 0 rgba(0,0,0,0.8);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.04em;
+}
+
+.step-text {
+  font-size: 0.7rem;
+  color: var(--lightgray);
+  margin-bottom: 1rem;
+  letter-spacing: 0.04em;
+  line-height: 1.7;
+  max-width: 580px;
+}
+
+.step-img {
+  max-width: 640px;
+  width: 100%;
+  display: block;
+  border: 3px solid var(--midgray);
+  margin-bottom: 1rem;
+  image-rendering: auto;
+}
+
+/* ── FOOTER ── */
+footer {
+  background: var(--black);
+  border-top: 4px solid var(--green-dk);
+  padding: 2.5rem 2rem;
+  text-align: center;
+}
+
+.footer-title {
+  font-size: 0.9rem;
+  color: var(--green-hi);
+  text-shadow: 2px 2px 0 var(--green-dk);
+  margin-bottom: 0.75rem;
+}
+
+footer p {
+  font-size: 0.65rem;
+  color: var(--lightgray);
+  letter-spacing: 0.08em;
+}
+
+footer a { color: var(--gold); text-decoration: none; }
+footer a:hover { color: var(--gold-hi); }
+
+@media (max-width: 540px) {
+  .nav-links { display: none; }
+  .hero-text { padding: 2.5rem 1.5rem 3.5rem; }
+  .section { padding: 3rem 1rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-brand">☕ CHOCOLATE EDITION</a>
+  <ul class="nav-links">
+    <li><a href="#features">FEATURES</a></li>
+    <li><a href="#mods">NEW MODS</a></li>
+    <li><a href="#install">INSTALL</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-text">
+    <span class="hero-eyebrow">MODPACK &nbsp;·&nbsp; EDITED BY ZQT</span>
+    <h1 class="hero-title px-text">The Chocolate<br>Edition</h1>
+    <p class="hero-sub">An immersive, progression-focused modpack. Fight 45+ bosses, discover 100s of new mobs, and uncover multiple climactic endings — now with AE2 and WATERFrAMES added.</p>
+    <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-top:0.5rem;">
+      <a href="https://drive.google.com/file/d/1gsK1DOecKRpPATdpqGjWOwNF6sOa6UH3/view?usp=sharing" class="btn btn-green" target="_blank">⬇ DOWNLOAD</a>
+      <a href="#install" class="btn btn-gray">HOW TO INSTALL</a>
+    </div>
+    <span style="font-size:0.62rem; color:var(--lightgray); letter-spacing:0.1em;">4–8 GB RAM RECOMMENDED</span>
+  </div>
+  <div class="hero-img-side">
+    <img
+      src="https://www.bisecthosting.com/images/CF/The_Chocolate_Edition/BH_TCE_Header.webp"
+      alt="The Chocolate Edition"
+      onerror="this.style.opacity='0'"
+    />
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- CREDIT NOTICE -->
+<div style="background:#111; border-bottom:3px solid var(--dirt-dk);">
+  <div style="max-width:1100px; margin:0 auto; padding:1.25rem 2rem; display:flex; align-items:center; gap:1.25rem; flex-wrap:wrap;">
+    <span style="font-size:1.1rem; flex-shrink:0;">📦</span>
+    <div>
+      <span style="font-size:0.72rem; color:var(--offwhite); letter-spacing:0.06em; text-shadow:2px 2px 0 rgba(0,0,0,0.8);">
+        THIS IS A MODIFIED VERSION OF
+        <a href="https://www.curseforge.com/minecraft/modpacks/mc-chocolate-edition" target="_blank"
+           style="color:var(--gold-hi); text-decoration:none; text-shadow:2px 2px 0 #7a5800;">
+          THE CHOCOLATE EDITION
+        </a>
+        BY ITS ORIGINAL AUTHORS ON CURSEFORGE.
+      </span>
+      <span style="display:block; font-size:0.65rem; color:var(--lightgray); margin-top:4px; letter-spacing:0.06em;">
+        ALL ORIGINAL CONTENT, MODS, AND ASSETS BELONG TO THEIR RESPECTIVE CREATORS.
+        ZQT'S BUILD ADDS APPLIED ENERGISTICS 2 AND WATERFRAMES ON TOP OF THE UNMODIFIED BASE PACK.
+      </span>
+    </div>
+    <a href="https://www.curseforge.com/minecraft/modpacks/mc-chocolate-edition" target="_blank"
+       class="btn btn-gray" style="font-size:0.65rem; padding:0.5rem 1rem; margin-left:auto; white-space:nowrap; flex-shrink:0;">
+      ↗ ORIGINAL PACK
+    </a>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- INSTALL -->
+<div id="install">
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title px-text">HOW TO INSTALL</div>
+      <div class="section-sub">Five steps to get up and running with ATLauncher.</div>
+    </div>
+
+    <div class="steps">
+
+      <div class="step">
+        <div class="step-num-col">
+          <div class="step-num-box">1</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">DOWNLOAD & OPEN ATLAUNCHER</div>
+          <p class="step-text">ATLauncher is a free Minecraft launcher with great modpack support. Download it, install it, and log in with your Microsoft / Mojang account before continuing.</p>
+          <a href="https://atlauncher.com/downloads" class="btn btn-green" target="_blank" style="font-size:0.72rem;">↗ GET ATLAUNCHER</a>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num-col">
+          <div class="step-num-box">2</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">DOWNLOAD THE MODPACK ZIP</div>
+          <p class="step-text">Download the custom build from Google Drive. Save it somewhere easy to find — your Downloads folder is fine. Do NOT unzip it.</p>
+          <a href="https://drive.google.com/file/d/1gsK1DOecKRpPATdpqGjWOwNF6sOa6UH3/view?usp=sharing" class="btn btn-green" target="_blank" style="font-size:0.72rem;">⬇ DOWNLOAD MODPACK ZIP</a>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num-col">
+          <div class="step-num-box">3</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">IMPORT MODPACK IN ATLAUNCHER</div>
+          <p class="step-text">In ATLauncher, open the Instances tab and click Import. You'll see the dialog shown below.</p>
+          <img class="step-img" src="https://i.imgur.com/eOpq1jZ.png" alt="ATLauncher import dialog" loading="lazy" />
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num-col">
+          <div class="step-num-box">4</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">BROWSE & SELECT THE ZIP FILE</div>
+          <p class="step-text">Click Browse, navigate to where you saved the modpack ZIP, select it, and click Open.</p>
+          <img class="step-img" src="https://i.imgur.com/NthQ0E1.png" alt="ATLauncher file browser" loading="lazy" />
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num-col">
+          <div class="step-num-box">5</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">INSTALL & CONFIRM</div>
+          <p class="step-text">ATLauncher shows the pack details. Click Install, confirm any dialogs, and wait for the installation to finish. Then hit Play — enjoy!</p>
+          <img class="step-img" src="https://i.imgur.com/zufE6zR.png" alt="ATLauncher install confirmation" loading="lazy" />
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- FEATURES -->
+<div id="features">
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title px-text">WHAT'S INSIDE</div>
+      <div class="section-sub">Every feature of the original Chocolate Edition, plus zqt's custom additions.</div>
+    </div>
+    <div class="features-grid">
+      <div class="feat-card">
+        <span class="feat-icon">⚔️</span>
+        <div class="feat-title">45+ UNIQUE BOSSES</div>
+        <p class="feat-body">Customised encounters throughout the world. Each one distinct, dangerous, and full of secrets.</p>
+      </div>
+      <div class="feat-card">
+        <span class="feat-icon">🗺️</span>
+        <div class="feat-title">JOURNEY TO THE END</div>
+        <p class="feat-body">Extremely progression-focused. Uncover the secrets of Eyes of Ender as you chart your path.</p>
+      </div>
+      <div class="feat-card">
+        <span class="feat-icon">🐾</span>
+        <div class="feat-title">40+ PETS & MOUNTS</div>
+        <p class="feat-body">Collect, train, and ride a huge variety of companions found across biomes and dungeons.</p>
+      </div>
+      <div class="feat-card">
+        <span class="feat-icon">🏰</span>
+        <div class="feat-title">~20 DUNGEONS</div>
+        <p class="feat-body">Jaw-dropping dungeons packed with variety, secrets, and rewards worth fighting for.</p>
+      </div>
+      <div class="feat-card">
+        <span class="feat-icon">🌍</span>
+        <div class="feat-title">100s OF NEW MOBS</div>
+        <p class="feat-body">New creatures in every biome. Breathtaking world generation and balanced structures.</p>
+      </div>
+      <div class="feat-card">
+        <span class="feat-icon">📖</span>
+        <div class="feat-title">IN-GAME WIKI</div>
+        <p class="feat-body">A massive built-in wiki so you'll never get lost in any system or mechanic.</p>
+      </div>
+      <div class="feat-card">
+        <span class="feat-icon">🎮</span>
+        <div class="feat-title">CONTROLLER SUPPORT</div>
+        <p class="feat-body">Full couch co-op and controller support built right in. Play how you want.</p>
+      </div>
+      <div class="feat-card">
+        <span class="feat-icon">🧱</span>
+        <div class="feat-title">1000s OF NEW BLOCKS</div>
+        <p class="feat-body">Build with a massive palette of new blocks and master a full suite of machinery.</p>
+      </div>
+      <div class="feat-card">
+        <span class="feat-icon">🔮</span>
+        <div class="feat-title">MULTIPLE ENDINGS</div>
+        <p class="feat-body">Many secrets, a lot of lore, and multiple climactic endings waiting to be discovered.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- BOSS -->
+<div class="boss-wrap">
+  <div class="boss-inner">
+    <img
+      class="boss-img"
+      src="https://media.forgecdn.net/attachments/description/888414/description_f1127499-9153-47ab-9594-24e6559ac9e1.png"
+      alt="Witherstorm Boss"
+      onerror="this.style.display='none'"
+    />
+    <div class="boss-text">
+      <div class="boss-eyebrow">FEATURED BOSS</div>
+      <h2 class="boss-title px-text">The Witherstorm</h2>
+      <p class="boss-body">One of the pack's most climactic encounters. Unravel the lore, collect the Eyes, and face a monster that will test everything you've built.</p>
+      <div class="stat-row">
+        <div class="stat">
+          <span class="stat-num">45+</span>
+          <span class="stat-label">BOSSES</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">100s</span>
+          <span class="stat-label">NEW MOBS</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">~20</span>
+          <span class="stat-label">DUNGEONS</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- NEW MODS -->
+<div id="mods">
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title px-text">MODS ADDED BY ZQT</div>
+      <div class="section-sub">Custom additions on top of the original Chocolate Edition.</div>
+    </div>
+    <div class="mod-list">
+      <a href="https://www.curseforge.com/minecraft/mc-mods/applied-energistics-2" class="mod-row" target="_blank">
+        <div class="mod-icon-box">⚡</div>
+        <div>
+          <div class="mod-name">APPLIED ENERGISTICS 2</div>
+          <div class="mod-desc">Digital storage networks, autocrafting, and ME systems</div>
+        </div>
+        <span class="new-tag">NEW</span>
+      </a>
+      <a href="https://www.curseforge.com/minecraft/mc-mods/waterframes" class="mod-row" target="_blank">
+        <div class="mod-icon-box">🎬</div>
+        <div>
+          <div class="mod-name">WATERFRAMES</div>
+          <div class="mod-desc">Multimedia displays — show images and video in-world</div>
+        </div>
+        <span class="new-tag">NEW</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-title">☕ THE CHOCOLATE EDITION — ZQT'S BUILD</div>
+  <p>MODIFIED AND MAINTAINED BY ZQT &nbsp;·&nbsp; NOT AFFILIATED WITH THE ORIGINAL AUTHORS</p>
+  <p style="margin-top:0.75rem;">
+    ORIGINAL MODPACK:
+    <a href="https://www.curseforge.com/minecraft/modpacks/mc-chocolate-edition" target="_blank">THE CHOCOLATE EDITION ON CURSEFORGE</a>
+    &nbsp;·&nbsp; ALL CREDIT FOR THE BASE PACK GOES TO ITS CREATORS
+  </p>
+  <p style="margin-top:0.5rem;">
+    DOWNLOAD THIS BUILD VIA <a href="https://drive.google.com/file/d/1gsK1DOecKRpPATdpqGjWOwNF6sOa6UH3/view?usp=sharing" target="_blank">GOOGLE DRIVE</a>
+  </p>
+</footer>
+
+</body>
+</html>
